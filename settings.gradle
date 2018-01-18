@@ -114,6 +114,8 @@ project(":code/Range").name = "Range-Model"
 // Semichev Uriy
 include "code/ratio-calculator/Model"
 project(":code/ratio-calculator/Model").name = "ratio-calculator-Model"
+include "code/ratio-calculator/View"
+project(":code/ratio-calculator/View").name = "ratio-calculator-View"
 
 // Tretiyakiva Olga
 
