@@ -3,6 +3,8 @@
 
 
 // Bastrakova Ksenia
+include "code/merge-sort"
+project(":code/merge-sort").name = "merge-sort"
 
 
 
@@ -20,8 +22,12 @@ project(":code/DistanceBetweenVectors/View").name = "DistanceBetweenVectors-View
 
 
 // Volokitin Valentin
-include "code/Prime_number"
-project(":code/Prime_number").name = "PrimeNumber-Model"
+include "code/prime-number/Model"
+project(":code/prime-number/Model").name = "prime-number-Model"
+include "code/prime-number/ViewModel"
+project(":code/prime-number/ViewModel").name = "prime-number-ViewModel"
+include "code/prime-number/View"
+project(":code/prime-number/View").name = "prime-number-View"
 
 // Gerasimov Dmitriy
 include "code/left_sided_heap"
@@ -36,12 +42,16 @@ include "code/converter-temperature/View"
 project(":code/converter-temperature/View").name = "converter-temperature-View"
 
 // Gorbunova Natalia
-
-
+include "code/mortgage-calculator"
+project (":code/mortgage-calculator").name= "mortgage-calculator-Model"
 
 // Krivonosov Mikhail
-include "code/polynomial-calculator"
-project(":code/polynomial-calculator").name = "polynomial-calculator-Model"
+include "code/polynomial-calculator/Model"
+project(":code/polynomial-calculator/Model").name = "polynomial-calculator-Model"
+include "code/polynomial-calculator/ViewModel"
+project(":code/polynomial-calculator/ViewModel").name = "polynomial-calculator-ViewModel"
+include "code/polynomial-calculator/View"
+project(":code/polynomial-calculator/View").name = "polynomial-calculator-View"
 
 // Kuzmin Pavel
 
@@ -60,8 +70,8 @@ include "code/statistical-values/ViewModel"
 project(":code/statistical-values/ViewModel").name = "statistical-values-ViewModel"
 
 // Morozova Julia
-
-
+include "code/booksale"
+project(":code/booksale").name = "booksale-Model"
 
 // Novak Alexander
 include "code/number-system-converter"
@@ -98,20 +108,20 @@ project(":code/vectors3d").name = "vectors3d-Model"
 
 
 // Semerenko Alexander
-
-
+include "code/Range"
+project(":code/Range").name = "Range-Model"
 
 // Semichev Uriy
-
-
+include "code/ratio-calculator"
+project(":code/ratio-calculator").name = "ratio-calculator"
 
 // Tretiyakiva Olga
 
 
 
 // Uvarov Denis
-
-
+include "code/game-of-life"
+project(":code/game-of-life").name = "Game-of-life-Model"
 
 // Umnikov Eugene
 include "code/triangle"
@@ -135,6 +145,9 @@ project(":code/bevzuk-anton").name = "bevzuk-anton-Model"
 // Korniakov Kirill, lab1
 include "code/korniakov-kirill-lab1"
 project(":code/korniakov-kirill-lab1").name = "korniakov-kirill-lab1-Model"
+
+
+
 
 // Korniakov Kirill, lab2-legacy
 include "code/korniakov-kirill-lab2-legacy/Model"
