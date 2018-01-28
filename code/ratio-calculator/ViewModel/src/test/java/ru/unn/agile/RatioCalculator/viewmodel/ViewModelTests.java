@@ -32,13 +32,7 @@ public class ViewModelTests {
     }
 
     @Test
-    public void statusIsWaitingWhenCalculateWithEmptyFields() {
-        viewModel.calculate();
-        assertEquals(Status.WAITING.toString(), viewModel.statusProperty().get());
-    }
-
-    @Test
-    public void statusIsReadyWhenFieldsAreFill() {
+    public void correctStatusWhenFieldsAreFill() {
         setInputData();
         assertEquals(Status.READY.toString(), viewModel.statusProperty().get());
     }
@@ -68,6 +62,13 @@ public class ViewModelTests {
     public void addIsDefaultOperation() {
         assertEquals(Operation.ADD, viewModel.operationProperty().get());
     }
+
+    @Test
+    public void statusIsWaitingWhenCalculateWithEmptyFields() {
+        viewModel.calculate();
+        assertEquals(Status.WAITING.toString(), viewModel.statusProperty().get());
+    }
+
 
     @Test
     public void operationAddHasCorrectResult() {
