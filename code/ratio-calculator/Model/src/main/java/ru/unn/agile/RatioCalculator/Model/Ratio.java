@@ -101,6 +101,31 @@ public class Ratio {
         return div(new Ratio(number));
     }
 
+    public enum Operation {
+        ADD("Add") {
+            public Ratio apply(final Ratio left, final Ratio right) {
+                return left.add(right);
+            }
+        },
+        MULTIPLY("Mul") {
+            public Ratio apply(final Ratio left, final Ratio right) {
+                return left.mult(right);
+            }
+        };
+
+        private final String name;
+        Operation(final String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        public abstract Ratio apply(Ratio left, Ratio right);
+    }
+
     private void init(final int numerator, final int denominator) {
         if (denominator == 0) {
             throw new ArithmeticException("Divide by zero is forbidden!");
