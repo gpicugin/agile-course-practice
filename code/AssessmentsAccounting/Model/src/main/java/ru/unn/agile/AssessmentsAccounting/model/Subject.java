@@ -2,7 +2,7 @@ package ru.unn.agile.AssessmentsAccounting.model;
 
 import java.util.UUID;
 
-public class Student {
+public class Subject {
 
     public UUID getId() {
         return this.id;
@@ -12,18 +12,18 @@ public class Student {
         return this.name;
     }
 
-    public Student(final UUID studentId, final String studentName) {
-        if (studentId == null) {
-            throw new NullPointerException("Student ID is null");
+    public Subject(final UUID subjectId, final String subjectName) {
+        if (subjectId == null) {
+            throw new NullPointerException("Subject ID is null");
         }
-        this.validateName(studentName);
-        this.id = studentId;
-        this.name = studentName;
+        this.validateName(subjectName);
+        this.id = subjectId;
+        this.name = subjectName;
     }
 
-    public void rename(final String newStudentName) {
-        this.validateName(newStudentName);
-        this.name = newStudentName;
+    public void rename(final String newSubjectName) {
+        this.validateName(newSubjectName);
+        this.name = newSubjectName;
     }
 
     @Override
@@ -33,8 +33,8 @@ public class Student {
 
     @Override
     public boolean equals(final Object object) {
-        if (object instanceof Student) {
-            return this.getId().equals(((Student) object).getId());
+        if (object instanceof Subject) {
+            return this.getId().equals(((Subject) object).getId());
         } else {
             return false;
         }
@@ -45,13 +45,13 @@ public class Student {
         return this.name;
     }
 
-    private String name;
-
     private UUID id;
+
+    private String name;
 
     private void validateName(final String name) {
         if (name.isEmpty()) {
-            throw new IllegalArgumentException("Student must have not empty name");
+            throw new IllegalArgumentException("Subject must have not empty name");
         }
     }
 }
