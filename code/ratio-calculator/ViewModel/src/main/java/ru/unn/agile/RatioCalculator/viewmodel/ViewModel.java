@@ -12,25 +12,10 @@ import javafx.beans.binding.BooleanBinding;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Math.abs;
+
 
 public class ViewModel {
-     private final StringProperty denominatorFirst = new SimpleStringProperty();
-     private final StringProperty numeratorFirst = new SimpleStringProperty();
-     private final StringProperty denominatorSecond = new SimpleStringProperty();
-     private final StringProperty numeratorSecond = new SimpleStringProperty();
-     private final StringProperty resultDenominator = new SimpleStringProperty();
-     private final StringProperty resultNumerator = new SimpleStringProperty();
-     private final BooleanProperty calculationDisabled = new SimpleBooleanProperty();
-
-    private final ObjectProperty<ObservableList<Operation>> operations =
-            new SimpleObjectProperty<>(FXCollections.observableArrayList(Operation.values()));
-    private final ObjectProperty<Operation> operation = new SimpleObjectProperty<>();
-    private final List<ValueChangeListener> valueChangedListeners = new ArrayList<>();
-
-    public ObjectProperty<Operation> operationProperty() {
-        return operation;
-    }
-
     public ViewModel() {
         denominatorFirst.set("");
         numeratorFirst.set("");
@@ -51,7 +36,8 @@ public class ViewModel {
 
         BooleanBinding couldCalculate = new BooleanBinding() {
             {
-                super.bind(denominatorFirst);
+                super.bind(denominatorFirst, denominatorSecond,
+                        numeratorFirst, numeratorSecond);
             }
             @Override
             protected boolean computeValue() {
@@ -67,16 +53,22 @@ public class ViewModel {
             valueChangedListeners.add(listener);
         }
     }
+    public ObjectProperty<Operation> operationProperty() {
+        return operation;
+    }
 
     public StringProperty denominatorFirstProperty() {
         return denominatorFirst;
     }
+
     public StringProperty numeratorFirstProperty() {
         return numeratorFirst;
     }
+
     public StringProperty denominatorSecondProperty() {
         return denominatorSecond;
     }
+
     public StringProperty numeratorSecondProperty() {
         return numeratorSecond;
     }
@@ -89,42 +81,41 @@ public class ViewModel {
         return resultDenominator.get();
     }
 
+    public StringProperty resultNumeratorProperty() {
+        return resultNumerator;
+    }
     public final String getResultNumerator() {
         return resultNumerator.get();
     }
 
-    public StringProperty resultNumeratorProperty() {
-        return resultNumerator;
-    }
-
-
-    private final StringProperty status = new SimpleStringProperty();
-
     public StringProperty statusProperty() {
         return status;
     }
+
     public final String getStatus() {
         return status.get();
     }
-    public ObjectProperty<ObservableList<Operation>> operationsProperty() {
-        return operations;
-    }
+
     public final ObservableList<Operation> getOperations() {
         return operations.get();
     }
 
-    private class ValueChangeListener implements ChangeListener<String> {
-        @Override
-        public void changed(final ObservableValue<? extends String> observable,
-                            final String oldValue, final String newValue) {
-            status.set(getInputStatus().toString());
-        }
+    public ObjectProperty<ObservableList<Operation>> operationsProperty() {
+        return operations;
     }
+
+    public BooleanProperty calculationDisabledProperty() {
+        return calculationDisabled;
+    }
+
+    public final boolean isCalculationDisabled() {
+        return calculationDisabled.get();
+    }
+
     public void calculate() {
         if (calculationDisabled.get()) {
             return;
         }
-
         Ratio z1 = new Ratio(Integer.parseInt(numeratorFirst.get()),
                 Integer.parseInt(denominatorFirst.get()));
         Ratio z2 = new Ratio(Integer.parseInt(numeratorSecond.get()),
@@ -137,6 +128,13 @@ public class ViewModel {
         status.set(Status.SUCCESS.toString());
     }
 
+    private class ValueChangeListener implements ChangeListener<String> {
+        @Override
+        public void changed(final ObservableValue<? extends String> observableValue,
+                            final String oldValue, final String newValue) {
+            status.set(getInputStatus().toString());
+        }
+    }
 
     private Status getInputStatus() {
         Status inputStatus = Status.READY;
@@ -145,11 +143,14 @@ public class ViewModel {
             inputStatus = Status.WAITING;
         }
         try {
-            if (!denominatorFirst.get().isEmpty()) {
-                Double.parseDouble(denominatorFirst.get());
+            if (!denominatorFirst.get().isEmpty()
+                    && checkNull(Double.parseDouble(denominatorFirst.get()))) {
+                inputStatus = Status.BAD_FORMAT;
+
             }
-            if (!denominatorSecond.get().isEmpty()) {
-                Double.parseDouble(denominatorSecond.get());
+            if (!denominatorSecond.get().isEmpty()
+                    && checkNull(Double.parseDouble(denominatorSecond.get()))) {
+                inputStatus = Status.BAD_FORMAT;
             }
             if (!numeratorFirst.get().isEmpty()) {
                 Double.parseDouble(numeratorFirst.get());
@@ -160,24 +161,41 @@ public class ViewModel {
         } catch (NumberFormatException nfe) {
             inputStatus = Status.BAD_FORMAT;
         }
-
         return inputStatus;
     }
+
+    boolean checkNull(final double value) {
+        return (abs(value) < NULL_VALUE);
+    }
+
+    private final StringProperty denominatorFirst = new SimpleStringProperty();
+    private final StringProperty numeratorFirst = new SimpleStringProperty();
+    private final StringProperty denominatorSecond = new SimpleStringProperty();
+    private final StringProperty numeratorSecond = new SimpleStringProperty();
+    private final StringProperty resultDenominator = new SimpleStringProperty();
+    private final StringProperty resultNumerator = new SimpleStringProperty();
+    private final BooleanProperty calculationDisabled = new SimpleBooleanProperty();
+    private static final double NULL_VALUE = 10e-6;
+
+    private final ObjectProperty<ObservableList<Operation>> operations =
+            new SimpleObjectProperty<>(FXCollections.observableArrayList(Operation.values()));
+    private final ObjectProperty<Operation> operation = new SimpleObjectProperty<>();
+    private final List<ValueChangeListener> valueChangedListeners = new ArrayList<>();
+    private final StringProperty status = new SimpleStringProperty();
 
 
 }
 
 enum Status {
     WAITING("Please provide input data"),
-    READY("Press 'Calculate' or Enter"),
-    BAD_FORMAT("Bad format"),
+    READY("Press 'Calculate'"),
+    BAD_FORMAT("Bad input format"),
     SUCCESS("Success");
-
-    private final String name;
-    Status(final String name) {
-        this.name = name;
+    Status(final String nameStatus) {
+        this.name = nameStatus;
     }
     public String toString() {
         return name;
     }
+    private final String name;
 }

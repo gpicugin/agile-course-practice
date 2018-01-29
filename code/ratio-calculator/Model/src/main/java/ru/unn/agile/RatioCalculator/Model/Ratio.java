@@ -100,7 +100,6 @@ public class Ratio {
     public Ratio div(final int number) {
         return div(new Ratio(number));
     }
-
     public enum Operation {
         ADD("Add") {
             public Ratio apply(final Ratio left, final Ratio right) {
@@ -110,6 +109,16 @@ public class Ratio {
         MULTIPLY("Mul") {
             public Ratio apply(final Ratio left, final Ratio right) {
                 return left.mult(right);
+            }
+        },
+        DIV("Div") {
+            public Ratio apply(final Ratio left, final Ratio right) {
+                return left.div(right);
+            }
+        },
+        SUB("Subtraction") {
+            public Ratio apply(final Ratio left, final Ratio right) {
+                return left.sub(right);
             }
         };
 
