@@ -123,43 +123,37 @@ public class ViewModel {
     }
 
     private Status getInputStatus() {
-        Status inputStatus = Status.READY;
         if (getInputMatrixSize().isEmpty()) {
-            inputStatus = Status.WAITING;
-        } else {
-            try {
-                int inputSize = Integer.parseInt(getInputMatrixSize());
-                if ((inputSize <= 1)) {
+            return Status.WAITING;
+        }
+        try {
+            int inputSize = Integer.parseInt(getInputMatrixSize());
+            if ((inputSize <= 1)) {
+                return Status.BAD_FORMAT;
+            }
+            if ((getFieldForMatrix().isEmpty())) {
+                return Status.WAITING_MATRIX;
+            }
+            String[] mas = getFieldForMatrix().split("/");
+            for (int i = 0; i < mas.length; i++) {
+                if (mas[i].equals("")) {
                     return Status.BAD_FORMAT;
                 }
-                if ((getFieldForMatrix().isEmpty())) {
-                    return Status.WAITING_MATRIX;
-                } else {
-                    String inputMatrix = getFieldForMatrix().toString();
-                    String[] mas = inputMatrix.split("/");
-                    for (int i = 0; i < mas.length; i++) {
-                        if (mas[i].equals("")) {
-                            return Status.BAD_FORMAT;
-                        }
-                    }
-                    for (int i = 0; i < mas.length; i++) {
-                        String[] rowMatrix = mas[i].split(",");
-                        if ((rowMatrix.length != mas.length)
-                                || (rowMatrix.length * mas.length != inputSize * inputSize)) {
-                            return Status.BAD_FORMAT;
-                        }
-                        for (int j = 0; j < rowMatrix.length; j++) {
-                            if (!rowMatrix[j].matches(("(^[-]?\\d+[.]\\d+$)|(^[-]?\\d+$)"))) {
-                                return Status.BAD_FORMAT;
-                            }
-                        }
+                String[] rowMatrix = mas[i].split(",");
+                if ((rowMatrix.length != mas.length)
+                        || (rowMatrix.length * mas.length != inputSize * inputSize)) {
+                    return Status.BAD_FORMAT;
+                }
+                for (int j = 0; j < rowMatrix.length; j++) {
+                    if (!rowMatrix[j].matches((FLOAT_NUMBER_REGEX))) {
+                        return Status.BAD_FORMAT;
                     }
                 }
-            } catch (NumberFormatException nfe) {
-                inputStatus = Status.BAD_FORMAT;
             }
+        } catch (NumberFormatException nfe) {
+            return Status.BAD_FORMAT;
         }
-        return inputStatus;
+        return Status.READY;
     }
 
     private final StringProperty matrixSize = new SimpleStringProperty();
@@ -168,4 +162,5 @@ public class ViewModel {
     private final StringProperty status = new SimpleStringProperty();
     private final BooleanProperty calculateButtonDisabled = new SimpleBooleanProperty();
     private final List<ValueChangeListener> valueChangedListeners = new ArrayList<>();
+    private static final String FLOAT_NUMBER_REGEX = "(^[-]?\\d+[.]\\d+$)|(^[-]?\\d+$)";
 }
