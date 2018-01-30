@@ -1,10 +1,11 @@
 package ru.unn.agile.AssessmentsAccounting.view;
 
 import javafx.fxml.FXML;
-
 import javafx.scene.control.*;
-
+import ru.unn.agile.AssessmentsAccounting.infrastructure.AssessmentsTextLogger;
 import ru.unn.agile.AssessmentsAccounting.viewmodel.AssessmentsAccountingViewModel;
+
+import java.time.LocalDate;
 
 public class AssessmentsForm {
 
@@ -46,7 +47,6 @@ public class AssessmentsForm {
         this.subjectToRename.valueProperty().bindBidirectional(
                 this.viewModel.subjectToRenameProperty()
         );
-
         this.renameSubjectName.textProperty().bindBidirectional(
                 this.viewModel.newSubjectNameProperty()
         );
@@ -85,6 +85,9 @@ public class AssessmentsForm {
         this.averageSubjectAssessments.textProperty().bindBidirectional(
                 this.viewModel.subjectAverageAssessmentProperty()
         );
+        this.loggerTextArea.textProperty().bindBidirectional(
+                this.viewModel.getLogsProperty()
+        );
         this.viewModel.errorMessageIsShownProperty().addListener(
                 (observable, oldValue, newValue) -> {
                     if (newValue) {
@@ -115,7 +118,9 @@ public class AssessmentsForm {
     }
 
     @FXML
-    private AssessmentsAccountingViewModel viewModel = new AssessmentsAccountingViewModel();
+    private AssessmentsAccountingViewModel viewModel =
+            new AssessmentsAccountingViewModel(
+                    new AssessmentsTextLogger("./TextLogger_lab3_" + LocalDate.now() + ".log"));
 
     @FXML
     private TextField studentToAdd;
@@ -167,4 +172,7 @@ public class AssessmentsForm {
 
     @FXML
     private Label averageStudentAssessments;
+
+    @FXML
+    private TextArea loggerTextArea;
 }

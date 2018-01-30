@@ -5,9 +5,10 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="462.0" prefWidth="604.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.unn.agile.AssessmentsAccounting.view.AssessmentsForm">
+<AnchorPane prefHeight="550.0" prefWidth="604.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.unn.agile.AssessmentsAccounting.view.AssessmentsForm">
    <children>
        <Label layoutX="14.0" layoutY="23.0" prefHeight="17.0" prefWidth="48.0" text="Add:">
             <font>
@@ -55,5 +56,6 @@
        <Label fx:id="studentAssessments" layoutX="67.0" layoutY="360.0" prefHeight="17.0" prefWidth="523.0" />
        <Label fx:id="averageSubjectAssessments" layoutX="303.0" layoutY="392.0" prefHeight="17.0" prefWidth="76.0" />
        <Label fx:id="averageStudentAssessments" layoutX="303.0" layoutY="423.0" prefHeight="17.0" prefWidth="48.0" />
+       <TextArea fx:id="loggerTextArea" editable="false" layoutX="10.0" layoutY="450.0" prefHeight="90.0" prefWidth="580.0"  text="Logging.."/>
    </children>
 </AnchorPane>

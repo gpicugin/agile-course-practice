@@ -1,13 +1,14 @@
 package ru.unn.agile.AssessmentsAccounting.viewmodel;
 
-import java.util.List;
-import java.util.UUID;
-
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.Pair;
 import ru.unn.agile.AssessmentsAccounting.model.*;
+
+import java.util.List;
+import java.util.UUID;
+
 
 public class AssessmentsAccountingViewModel {
 
@@ -79,7 +80,23 @@ public class AssessmentsAccountingViewModel {
         return subjectAverageAssessment;
     }
 
-    public AssessmentsAccountingViewModel() {
+    public StringProperty getLogsProperty() {
+        return assesmentLogs;
+    }
+
+    public final void setLogger(final ILogger logger) {
+        if (logger == null) {
+            throw new IllegalArgumentException("Logger parameter can't be null!");
+        }
+        this.logger = logger;
+    }
+
+    public final List<String> getLog() {
+        return logger.getLog();
+    }
+
+    public AssessmentsAccountingViewModel(final ILogger logger) {
+        setLogger(logger);
         init();
     }
 
@@ -97,6 +114,7 @@ public class AssessmentsAccountingViewModel {
             final String newStudentName = this.studentToAdd.get();
             this.studentsTable.add(newStudentName);
             this.updateStudentsList();
+            updateLoggerInfo(createStudentAddingLog(newStudentName));
         } catch (IllegalArgumentException exception) {
             prepareForError(exception.getMessage());
         }
@@ -108,6 +126,7 @@ public class AssessmentsAccountingViewModel {
             final String newSubjectName = this.subjectToAdd.get();
             this.subjectsTable.add(newSubjectName);
             this.updateSubjectsList();
+            updateLoggerInfo(createSubjectAddingLog(newSubjectName));
         } catch (IllegalArgumentException exception) {
             prepareForError(exception.getMessage());
         }
@@ -121,8 +140,10 @@ public class AssessmentsAccountingViewModel {
                 return;
             }
             final String newName = this.newStudentName.get();
-            this.studentsTable.renameStudent(studentToRename.getName(), newName);
+            final String oldName = studentToRename.getName();
+            this.studentsTable.renameStudent(oldName, newName);
             this.updateStudentsList();
+            updateLoggerInfo(createStudentRenameLog(oldName, newName));
         } catch (IllegalArgumentException exception) {
             prepareForError(exception.getMessage());
         }
@@ -136,8 +157,10 @@ public class AssessmentsAccountingViewModel {
                 return;
             }
             final String newName = this.newSubjectName.get();
-            this.subjectsTable.renameSubject(subjectToRename.getName(), newName);
+            final String oldName = subjectToRename.getName();
+            this.subjectsTable.renameSubject(oldName, newName);
             this.updateSubjectsList();
+            updateLoggerInfo(createSubjectRenameLog(oldName, newName));
         } catch (IllegalArgumentException exception) {
             prepareForError(exception.getMessage());
         }
@@ -153,9 +176,9 @@ public class AssessmentsAccountingViewModel {
             if (student == null) {
                 item = "student";
             } else if (subject == null) {
-                item = "subject!";
-            } else if (subject == null) {
-                item = "assessment!";
+                item = "subject";
+            } else if (assessment == null) {
+                item = "assessment";
             }
             if (item != null) {
                 prepareForError("You should select " + item + "!");
@@ -163,6 +186,8 @@ public class AssessmentsAccountingViewModel {
             }
             this.assessmentsTable.add(student, subject, assessment);
             this.updateAssessmentsInformation(student, subject);
+            updateLoggerInfo(createAssessmentAddingLog(
+                    student.getName(), subject.getName(), assessment.toString()));
         } catch (Exception exc) {
             prepareForError("Error! Check input values!");
         }
@@ -175,6 +200,7 @@ public class AssessmentsAccountingViewModel {
         this.subjectToAdd.set("");
         this.newStudentName.set("");
         this.newSubjectName.set("");
+        this.assesmentLogs.set("");
         this.studentToAssess.addListener((observable, previousStudent, currentStudent) -> {
             this.updateAssessmentsInformation(currentStudent, this.subjectToAssess.get());
         });
@@ -245,11 +271,52 @@ public class AssessmentsAccountingViewModel {
     private SubjectsTable subjectsTable = new SubjectsTable();
     private AssessmentsTable assessmentsTable = new AssessmentsTable();
 
-
     private void prepareForError(final String message) {
+        updateLoggerInfo(createErrorLog(message));
         errorMessageText.set(message);
         errorMessageIsShown.set(true);
     }
+
+    private String createErrorLog(final String errorMessage) {
+        return "Error:\t" + errorMessage;
+    }
+
+    private String createStudentRenameLog(final String oldName, final String newName) {
+        return "Event:\tStudent " + oldName + " changed name to " + newName + ".";
+    }
+
+    private String createSubjectRenameLog(final String oldName, final String newName) {
+        return "Event:\tSubject " + oldName + " changed name to " + newName + ".";
+    }
+
+    private String createStudentAddingLog(final String name) {
+        return "Event:\tAdded new student " + name + ".";
+    }
+
+    private String createSubjectAddingLog(final String name) {
+        return "Event:\tAdded new subject " + name + ".";
+    }
+
+    private String createAssessmentAddingLog(final String studentName, final String subjectName,
+                                             final String assessment) {
+        return "Event:\tAdded new assessment " + assessment
+                + " to student " + studentName
+                + " by subject " + subjectName + ".";
+    }
+
+    public void updateLoggerInfo(final String message) {
+        logger.log(message);
+        List<String> currentLog = logger.getLog();
+        String record = new String("");
+        for (String log : currentLog) {
+            record += log + "\n";
+        }
+        assesmentLogs.set(record);
+    }
+
+    private ILogger logger;
+
+    private final StringProperty assesmentLogs = new SimpleStringProperty();
 
     private final StringProperty studentToAdd = new SimpleStringProperty();
 

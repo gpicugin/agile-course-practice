@@ -8,6 +8,8 @@ import ru.unn.agile.AssessmentsAccounting.model.Assessment;
 import ru.unn.agile.AssessmentsAccounting.model.Student;
 import ru.unn.agile.AssessmentsAccounting.model.Subject;
 
+import java.util.List;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -15,9 +17,13 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class AssessmentsAccountingViewModelTests {
+    public void setAnotherlViewModel(final AssessmentsAccountingViewModel anotherViewModel) {
+        this.viewModel = anotherViewModel;
+    }
+
     @Before
     public void setUp() {
-        viewModel = new AssessmentsAccountingViewModel();
+        viewModel = new AssessmentsAccountingViewModel(new FakeLogger());
     }
 
     @After
@@ -40,6 +46,7 @@ public class AssessmentsAccountingViewModelTests {
         assertEquals("", viewModel.newSubjectNameProperty().get());
         assertEquals("", viewModel.studentToAddProperty().get());
         assertEquals("", viewModel.subjectToAddProperty().get());
+        assertEquals(0, viewModel.getLog().size());
     }
 
     @Test
@@ -248,6 +255,176 @@ public class AssessmentsAccountingViewModelTests {
         viewModel.assessmentProperty().set(Assessment.EXCELLENT);
         viewModel.addAssessment();
         assertTrue(viewModel.isErrorMessageShown());
+    }
+
+    @Test
+    public void canLogAddingStudent() {
+        addStudent("Tom");
+        List<String> currentLog = viewModel.getLog();
+        assertEquals(1, currentLog.size());
+        assertTrue(currentLog.get(0).contains("Event"));
+        assertTrue(currentLog.get(0).contains("Tom"));
+    }
+
+    @Test
+    public void canLogErrorForAddingEmptyStudentName() {
+        addStudent("");
+        List<String> currentLog = viewModel.getLog();
+        assertEquals(1, currentLog.size());
+        assertFalse(currentLog.get(0).contains("Event"));
+        assertTrue(currentLog.get(0).contains("Error"));
+    }
+
+    @Test
+    public void canLogAddingSubject() {
+        addSubject("Math");
+        List<String> currentLog = viewModel.getLog();
+        assertEquals(1, currentLog.size());
+        assertTrue(currentLog.get(0).contains("Event"));
+        assertTrue(currentLog.get(0).contains("Math"));
+    }
+
+    @Test
+    @SuppressWarnings(value = "unchecked")
+    public void canLogRenamingStudent() {
+        addStudent("John");
+        Student student = getStudentAtIndex(0);
+        viewModel.newStudentNameProperty().set("Ivan");
+        viewModel.studentToRenameProperty().set(student);
+        viewModel.renameStudent();
+        List<String> currentLog = viewModel.getLog();
+        assertEquals(2, currentLog.size());
+        assertTrue(currentLog.get(1).contains("John"));
+        assertTrue(currentLog.get(1).contains("Ivan"));
+    }
+
+    @Test
+    @SuppressWarnings(value = "unchecked")
+    public void canLogRenamingSubject() {
+        addSubject("Math");
+        Subject subject = getSubjectAtIndex(0);
+        viewModel.newSubjectNameProperty().set("Algebra");
+        viewModel.subjectToRenameProperty().set(subject);
+        viewModel.renameSubject();
+        List<String> currentLog = viewModel.getLog();
+        assertEquals(2, currentLog.size());
+        assertTrue(currentLog.get(1).contains("Math"));
+        assertTrue(currentLog.get(1).contains("Algebra"));
+    }
+
+    @Test
+    @SuppressWarnings(value = "unchecked")
+    public void canLogErrorRenamingNullStudent() {
+        viewModel.newStudentNameProperty().set("Ivan");
+        viewModel.studentToRenameProperty().set(null);
+        viewModel.renameStudent();
+        List<String> currentLog = viewModel.getLog();
+        assertEquals(1, currentLog.size());
+        assertTrue(currentLog.get(0).contains("Error"));
+    }
+
+    @Test
+    @SuppressWarnings(value = "unchecked")
+    public void canLogErrorRenamingStudentToEmptyName() {
+        addStudent("John");
+        Student student = getStudentAtIndex(0);
+        viewModel.newStudentNameProperty().set("");
+        viewModel.studentToRenameProperty().set(student);
+        viewModel.renameStudent();
+        List<String> currentLog = viewModel.getLog();
+        assertEquals(2, currentLog.size());
+        assertTrue(currentLog.get(1).contains("Error"));
+    }
+
+    @Test
+    @SuppressWarnings(value = "unchecked")
+    public void canLogErrorRenamingNullSubject() {
+        viewModel.newSubjectNameProperty().set("Math");
+        viewModel.subjectToRenameProperty().set(null);
+        viewModel.renameSubject();
+        List<String> currentLog = viewModel.getLog();
+        assertEquals(1, currentLog.size());
+        assertTrue(currentLog.get(0).contains("Error"));
+    }
+
+    @Test
+    @SuppressWarnings(value = "unchecked")
+    public void canLogErrorRenamingSubjectToEmptyName() {
+        addSubject("Math");
+        Subject subject = getSubjectAtIndex(0);
+        viewModel.newStudentNameProperty().set("");
+        viewModel.subjectToRenameProperty().set(subject);
+        viewModel.renameSubject();
+        List<String> currentLog = viewModel.getLog();
+        assertEquals(2, currentLog.size());
+        assertTrue(currentLog.get(1).contains("Error"));
+    }
+
+    @Test
+    public void canLogAddingAssessment() {
+        addSubject("Math");
+        addStudent("Mark");
+        Student student = getStudentAtIndex(0);
+        Subject subject = getSubjectAtIndex(0);
+
+        viewModel.studentToAssessProperty().set(student);
+        viewModel.subjectToAssessProperty().set(subject);
+        viewModel.assessmentProperty().set(Assessment.EXCELLENT);
+        viewModel.addAssessment();
+        List<String> currentLog = viewModel.getLog();
+        assertEquals(3, currentLog.size());
+        assertTrue(currentLog.get(2).contains("Event"));
+        assertTrue(currentLog.get(2).contains("Math"));
+        assertTrue(currentLog.get(2).contains("Mark"));
+        assertTrue(currentLog.get(2).contains("5"));
+
+    }
+
+    @Test
+    public void canLogErrorAddingAssessmentToNullStudent() {
+        addSubject("Math");
+        Subject subject = getSubjectAtIndex(0);
+
+        viewModel.studentToAssessProperty().set(null);
+        viewModel.subjectToAssessProperty().set(subject);
+        viewModel.assessmentProperty().set(Assessment.GOOD);
+        viewModel.addAssessment();
+        List<String> currentLog = viewModel.getLog();
+        assertEquals(2, currentLog.size());
+        assertTrue(currentLog.get(1).contains("Error"));
+        assertTrue(currentLog.get(1).contains("student"));
+    }
+
+    @Test
+    public void canLogErrorAddingAssessmentToNullSubject() {
+        addStudent("Mark");
+        Student student = getStudentAtIndex(0);
+
+        viewModel.studentToAssessProperty().set(student);
+        viewModel.subjectToAssessProperty().set(null);
+        viewModel.assessmentProperty().set(Assessment.SATISFACTORY);
+        viewModel.addAssessment();
+        List<String> currentLog = viewModel.getLog();
+        assertEquals(2, currentLog.size());
+        assertTrue(currentLog.get(1).contains("subject"));
+        assertTrue(currentLog.get(1).contains("Error"));
+    }
+
+    @Test
+    public void canLogErrorAddingAssessmentNull() {
+        addStudent("Mark");
+        addSubject("Math");
+        Student student = getStudentAtIndex(0);
+        Subject subject = getSubjectAtIndex(0);
+
+        viewModel.subjectToAssessProperty().set(subject);
+        viewModel.studentToAssessProperty().set(student);
+        viewModel.assessmentProperty().set(null);
+        viewModel.addAssessment();
+        List<String> currentLog = viewModel.getLog();
+        assertEquals(3, currentLog.size());
+        assertTrue(currentLog.get(2).contains("Error"));
+        assertTrue(currentLog.get(2).contains("assessment"));
     }
 
     private AssessmentsAccountingViewModel viewModel;
