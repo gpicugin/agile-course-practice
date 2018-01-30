@@ -31,7 +31,7 @@ public class ViewModelTests {
     }
 
     @Test
-    public void statusIsCorrectWhenFieldsAreFill() {
+    public void statusIsReadyWhenFieldsAreFill() {
         setInputData("1", "2", "3", "4");
         assertEquals(Status.READY.toString(), viewModel.statusProperty().get());
     }
@@ -44,12 +44,17 @@ public class ViewModelTests {
     }
 
     @Test
+    public void  statusIsBadFormatIfDoubleFormat() {
+        viewModel.denominatorFirstProperty().set("0.1");
+        assertEquals(Status.BAD_FORMAT.toString(), viewModel.statusProperty().get());
+    }
+
+    @Test
     public void statusIsWaitingIfNotEnoughCorrectData() {
         viewModel.denominatorFirstProperty().set("1");
 
         assertEquals(Status.WAITING.toString(), viewModel.statusProperty().get());
     }
-
 
     @Test
     public void canSetAddOperation() {
@@ -75,7 +80,7 @@ public class ViewModelTests {
     }
 
     @Test
-    public void statusIsReadeIfDenominatorChangedFromZeroToCorrectValue() {
+    public void statusIsReadyIfDenominatorChangedFromZeroToCorrectValue() {
         setInputData("0", "2", "3", "4");
         assertEquals(Status.BAD_FORMAT.toString(), viewModel.statusProperty().get());
         viewModel.denominatorFirstProperty().set("999");
@@ -124,6 +129,5 @@ public class ViewModelTests {
         viewModel.denominatorSecondProperty().set(denominatorSecond);
         viewModel.numeratorSecondProperty().set(numeratorSecond);
     }
-
 
 }

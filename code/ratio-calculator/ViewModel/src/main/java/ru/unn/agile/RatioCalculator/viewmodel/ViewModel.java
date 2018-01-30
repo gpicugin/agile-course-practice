@@ -1,6 +1,11 @@
 package ru.unn.agile.RatioCalculator.viewmodel;
 
-import javafx.beans.property.*;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -11,8 +16,6 @@ import javafx.beans.binding.BooleanBinding;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.lang.Math.abs;
 
 
 public class ViewModel {
@@ -53,6 +56,7 @@ public class ViewModel {
             valueChangedListeners.add(listener);
         }
     }
+
     public ObjectProperty<Operation> operationProperty() {
         return operation;
     }
@@ -84,6 +88,7 @@ public class ViewModel {
     public StringProperty resultNumeratorProperty() {
         return resultNumerator;
     }
+
     public final String getResultNumerator() {
         return resultNumerator.get();
     }
@@ -144,28 +149,24 @@ public class ViewModel {
         }
         try {
             if (!denominatorFirst.get().isEmpty()
-                    && checkNull(Double.parseDouble(denominatorFirst.get()))) {
+                    && Integer.parseInt(denominatorFirst.get()) == 0) {
                 inputStatus = Status.BAD_FORMAT;
 
             }
             if (!denominatorSecond.get().isEmpty()
-                    && checkNull(Double.parseDouble(denominatorSecond.get()))) {
+                    && Integer.parseInt(denominatorSecond.get()) == 0) {
                 inputStatus = Status.BAD_FORMAT;
             }
             if (!numeratorFirst.get().isEmpty()) {
-                Double.parseDouble(numeratorFirst.get());
+                Integer.parseInt(numeratorFirst.get());
             }
             if (!numeratorSecond.get().isEmpty()) {
-                Double.parseDouble(numeratorSecond.get());
+                Integer.parseInt(numeratorSecond.get());
             }
         } catch (NumberFormatException nfe) {
             inputStatus = Status.BAD_FORMAT;
         }
         return inputStatus;
-    }
-
-    boolean checkNull(final double value) {
-        return (abs(value) < NULL_VALUE);
     }
 
     private final StringProperty denominatorFirst = new SimpleStringProperty();
@@ -175,7 +176,6 @@ public class ViewModel {
     private final StringProperty resultDenominator = new SimpleStringProperty();
     private final StringProperty resultNumerator = new SimpleStringProperty();
     private final BooleanProperty calculationDisabled = new SimpleBooleanProperty();
-    private static final double NULL_VALUE = 10e-6;
 
     private final ObjectProperty<ObservableList<Operation>> operations =
             new SimpleObjectProperty<>(FXCollections.observableArrayList(Operation.values()));
