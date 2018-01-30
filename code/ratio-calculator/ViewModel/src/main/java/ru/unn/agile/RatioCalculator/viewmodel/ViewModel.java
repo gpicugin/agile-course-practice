@@ -1,11 +1,11 @@
 package ru.unn.agile.RatioCalculator.viewmodel;
 
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -13,7 +13,6 @@ import javafx.collections.ObservableList;
 import ru.unn.agile.RatioCalculator.Model.Ratio;
 import ru.unn.agile.RatioCalculator.Model.Ratio.Operation;
 import javafx.beans.binding.BooleanBinding;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +55,6 @@ public class ViewModel {
             valueChangedListeners.add(listener);
         }
     }
-
     public ObjectProperty<Operation> operationProperty() {
         return operation;
     }
@@ -143,30 +141,39 @@ public class ViewModel {
 
     private Status getInputStatus() {
         Status inputStatus = Status.READY;
+        int divNullCheck = 1;
         if (denominatorFirst.get().isEmpty() || denominatorSecond.get().isEmpty()
                 || numeratorFirst.get().isEmpty() || numeratorSecond.get().isEmpty()) {
             inputStatus = Status.WAITING;
         }
         try {
-            if (!denominatorFirst.get().isEmpty()
-                    && Integer.parseInt(denominatorFirst.get()) == 0) {
-                inputStatus = Status.BAD_FORMAT;
-
-            }
-            if (!denominatorSecond.get().isEmpty()
-                    && Integer.parseInt(denominatorSecond.get()) == 0) {
-                inputStatus = Status.BAD_FORMAT;
-            }
-            if (!numeratorFirst.get().isEmpty()) {
-                Integer.parseInt(numeratorFirst.get());
-            }
             if (!numeratorSecond.get().isEmpty()) {
-                Integer.parseInt(numeratorSecond.get());
+                divNullCheck = Integer.parseInt(numeratorSecond.get());
             }
+            inputStatus = checkParseFields(inputStatus);
         } catch (NumberFormatException nfe) {
             inputStatus = Status.BAD_FORMAT;
         }
+        if (divNullCheck == 0 && operation.get() == Operation.DIV) {
+            inputStatus = Status.BAD_FORMAT;
+        }
         return inputStatus;
+    }
+
+    private Status checkParseFields(final Status inputStatus) throws NumberFormatException {
+        Status current = inputStatus;
+        if (!denominatorFirst.get().isEmpty()
+                && Integer.parseInt(denominatorFirst.get()) == 0) {
+            current = Status.BAD_FORMAT;
+        }
+        if (!denominatorSecond.get().isEmpty()
+                && Integer.parseInt(denominatorSecond.get()) == 0) {
+            current = Status.BAD_FORMAT;
+        }
+        if (!numeratorFirst.get().isEmpty()) {
+            Integer.parseInt(numeratorFirst.get());
+        }
+        return current;
     }
 
     private final StringProperty denominatorFirst = new SimpleStringProperty();
@@ -176,14 +183,11 @@ public class ViewModel {
     private final StringProperty resultDenominator = new SimpleStringProperty();
     private final StringProperty resultNumerator = new SimpleStringProperty();
     private final BooleanProperty calculationDisabled = new SimpleBooleanProperty();
-
     private final ObjectProperty<ObservableList<Operation>> operations =
             new SimpleObjectProperty<>(FXCollections.observableArrayList(Operation.values()));
     private final ObjectProperty<Operation> operation = new SimpleObjectProperty<>();
     private final List<ValueChangeListener> valueChangedListeners = new ArrayList<>();
     private final StringProperty status = new SimpleStringProperty();
-
-
 }
 
 enum Status {

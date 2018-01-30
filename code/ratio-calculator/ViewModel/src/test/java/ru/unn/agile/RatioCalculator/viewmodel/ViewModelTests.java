@@ -6,7 +6,6 @@ import org.junit.Test;
 import ru.unn.agile.RatioCalculator.Model.Ratio.Operation;
 import static junit.framework.TestCase.assertEquals;
 
-
 public class ViewModelTests {
     private ViewModel viewModel;
 
@@ -37,15 +36,16 @@ public class ViewModelTests {
     }
 
     @Test
-    public void canReportBadFormat() {
-        viewModel.denominatorFirstProperty().set("a");
-
+    public void canNotDivOnZero() {
+        viewModel.operationProperty().set(Operation.DIV);
+        setInputData("1", "2", "3", "0");
         assertEquals(Status.BAD_FORMAT.toString(), viewModel.statusProperty().get());
     }
 
     @Test
-    public void  statusIsBadFormatIfDoubleFormat() {
-        viewModel.denominatorFirstProperty().set("0.1");
+    public void canReportBadFormat() {
+        viewModel.denominatorFirstProperty().set("a");
+
         assertEquals(Status.BAD_FORMAT.toString(), viewModel.statusProperty().get());
     }
 
