@@ -130,4 +130,28 @@ public class ViewModelTests {
         String output = ".......**\n...******\n....*****\n**..**...\n**..**...\n**.......";
         assertEquals(output, viewModel.resultProperty().get());
     }
+
+    @Test
+    public void canSetDefaultTable() {
+        viewModel.heightProperty().set("3");
+        viewModel.widthProperty().set("4");
+        viewModel.setDefaultTable();
+        assertEquals("....\n....\n....", viewModel.tableProperty().get());
+    }
+
+    @Test
+    public void settingDefaultTableIsDisabledWhenNotEnoughData() {
+        viewModel.heightProperty().set("3");
+        assertTrue(viewModel.settingDefaultTableDisabledProperty().get());
+    }
+
+    @Test
+    public void canSetPreviousGeneration() {
+        viewModel.heightProperty().set("3");
+        viewModel.widthProperty().set("4");
+        viewModel.tableProperty().set("..**\n.*..\n.**.");
+        viewModel.getNextGeneration();
+        viewModel.setPreviousGeneration();
+        assertEquals("....\n.*.*\n....", viewModel.tableProperty().get());
+    }
 }

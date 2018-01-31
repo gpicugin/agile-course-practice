@@ -19,7 +19,6 @@ public class ViewModel {
         height.set("");
         width.set("");
         table.set("");
-        height.addListener(inputStringChangedListener);
         result.set("");
         status.set(Status.WAITING.toString());
         BooleanBinding couldGetNextGeneration = new BooleanBinding() {
@@ -32,6 +31,17 @@ public class ViewModel {
             }
         };
         gettingNextGenerationDisabled.bind(couldGetNextGeneration.not());
+
+        BooleanBinding couldSetDefaultTable = new BooleanBinding() {
+            {
+                super.bind(height, width);
+            }
+            @Override
+            protected boolean computeValue() {
+                return heightAndWidthIsCorrect();
+            }
+        };
+        settingDefaultTableDisabled.bind(couldSetDefaultTable.not());
 
         final List<StringProperty> fields = new ArrayList<StringProperty>() { {
             add(height);
@@ -46,57 +56,43 @@ public class ViewModel {
         }
     }
 
-    private Status getInputStatus() {
-        Status inputStatus = Status.READY;
-        try {
-            if (!height.get().isEmpty()) {
-                Integer.parseInt(height.get());
+    public void setDefaultTable() {
+        String defaultTable = "";
+        for (int i = 0; i < heightInt(); i++) {
+            for (int j = 0; j < widthInt(); j++) {
+                defaultTable = defaultTable + ".";
             }
-            if (!width.get().isEmpty()) {
-                Integer.parseInt(width.get());
+            if (i < heightInt() - 1) {
+                defaultTable = defaultTable + "\n";
             }
-        } catch (NumberFormatException nfe) {
-            inputStatus = Status.BAD_FORMAT;
-            return inputStatus;
         }
-        if (height.get().isEmpty() || width.get().isEmpty()
-                || table.get().isEmpty()) {
-            inputStatus = Status.WAITING;
-        } else if (!tableIsCorrect()) {
-            inputStatus = Status.BAD_FORMAT;
-        } else if (table.get().length() != ((widthInt() + 1) * heightInt() - 1)) {
-            inputStatus = Status.WAITING;
-        }
-        return inputStatus;
+        table.set(defaultTable);
+    }
+
+    public void setPreviousGeneration() {
+        table.set(result.get());
     }
 
     public String[] translateTableToInputArray() {
         String[] translatedTable = new String[heightInt() + 1];
         translatedTable[0] = width.get() + " " + height.get();
         String currentString = "";
-        int i = 0;
-        int j = 0;
-        while (i < heightInt()) {
-            while (j < widthInt()) {
+        for (int i = 0; i < heightInt(); i++) {
+            for (int j = 0; j < widthInt(); j++) {
                 currentString = currentString + table.get().charAt(i * (widthInt() + 1) + j);
-                j++;
             }
             translatedTable[i + 1] = currentString;
             currentString = "";
-            j = 0;
-            i++;
         }
         return  translatedTable;
     }
 
     public String translateNextGenerationArrayToOutputString(final String[] stringArray) {
         String outputString = "";
-        int i = 1;
-        while (i < stringArray.length - 1) {
+        for (int i = 1; i < stringArray.length - 1; i++) {
             outputString = outputString + stringArray[i] + "\n";
-            i++;
         }
-        outputString = outputString + stringArray[i];
+        outputString = outputString + stringArray[stringArray.length - 1];
         return outputString;
     }
 
@@ -104,9 +100,7 @@ public class ViewModel {
         GameOfLife testGame = new GameOfLife();
         testGame.readCurrentGeneration(translateTableToInputArray());
         testGame.buildNextGeneration();
-        //String[] nextGeneration = testGame.writeNextGeneration();
         result.set(translateNextGenerationArrayToOutputString(testGame.writeNextGeneration()));
-        //return translateNextGenerationArrayToOutputString(testGame.writeNextGeneration());
     }
 
     public StringProperty heightProperty() {
@@ -138,6 +132,13 @@ public class ViewModel {
         return gettingNextGenerationDisabled.get();
     }
 
+    public BooleanProperty settingDefaultTableDisabledProperty() {
+        return settingDefaultTableDisabled;
+    }
+    public final boolean isSettingDefaultTableDisabled() {
+        return settingDefaultTableDisabled.get();
+    }
+
     public int heightInt() {
         return Integer.parseInt(height.get());
     }
@@ -156,7 +157,7 @@ public class ViewModel {
     private final StringProperty status = new SimpleStringProperty();
 
     private final BooleanProperty gettingNextGenerationDisabled = new SimpleBooleanProperty();
-    private final ValueChangeListener inputStringChangedListener = new ValueChangeListener();
+    private final BooleanProperty settingDefaultTableDisabled = new SimpleBooleanProperty();
     private final List<ValueChangeListener> valueChangedListeners = new ArrayList<>();
 
     private class ValueChangeListener implements ChangeListener<String> {
@@ -167,24 +168,60 @@ public class ViewModel {
         }
     }
 
+    private Status getInputStatus() {
+        Status inputStatus = Status.READY;
+        try {
+            if (!height.get().isEmpty()) {
+                Integer.parseInt(height.get());
+            }
+            if (!width.get().isEmpty()) {
+                Integer.parseInt(width.get());
+            }
+        } catch (NumberFormatException numberFormatException) {
+            inputStatus = Status.BAD_FORMAT;
+            return inputStatus;
+        }
+        if (height.get().isEmpty() || width.get().isEmpty()
+                || table.get().isEmpty()) {
+            inputStatus = Status.WAITING;
+        } else if (!tableIsCorrect()) {
+            inputStatus = Status.BAD_FORMAT;
+        } else if (table.get().length() != ((widthInt() + 1) * heightInt() - 1)) {
+            inputStatus = Status.WAITING;
+        }
+        return inputStatus;
+    }
+
     private boolean tableIsCorrect() {
-        int i = 0, j = 0;
-        while (i < table.get().length()) {
+        int j = 0;
+        for (int i = 0; i < table.get().length(); i++) {
             if (j < widthInt()) {
                 if ((currentSymbol(i) != ".".charAt(0)) && (currentSymbol(i) != "*".charAt(0))) {
                     return false;
                 }
-                i++;
                 j++;
             } else {
                 if (currentSymbol(i) != "\n".charAt(0)) {
                     return false;
                 }
-                i++;
                 j = 0;
             }
         }
         return true;
+    }
+
+    private boolean heightAndWidthIsCorrect() {
+        try {
+            if (!height.get().isEmpty()) {
+                Integer.parseInt(height.get());
+            }
+            if (!width.get().isEmpty()) {
+                Integer.parseInt(width.get());
+            }
+        } catch (NumberFormatException numberFormatException) {
+            return false;
+        }
+        return !(height.get().isEmpty() || width.get().isEmpty());
     }
 }
 
