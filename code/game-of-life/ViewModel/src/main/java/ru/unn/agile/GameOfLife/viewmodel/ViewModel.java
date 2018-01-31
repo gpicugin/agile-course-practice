@@ -212,10 +212,10 @@ public class ViewModel {
 
     private boolean heightAndWidthIsCorrect() {
         try {
-            if (!height.get().isEmpty()) {
+            if (!width.get().isEmpty()) {
                 Integer.parseInt(height.get());
             }
-            if (!width.get().isEmpty()) {
+            if (!height.get().isEmpty()) {
                 Integer.parseInt(width.get());
             }
         } catch (NumberFormatException numberFormatException) {
