@@ -102,5 +102,4 @@ public class StudentTests {
         Student student = new Student(studentId, "Bill");
         assertNotEquals("Bill", student);
     }
-
 }

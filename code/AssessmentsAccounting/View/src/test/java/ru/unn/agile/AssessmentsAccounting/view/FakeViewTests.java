@@ -1,4 +1,4 @@
-package ru.unn.agile.AssessmentsAccouunting.view;
+package ru.unn.agile.AssessmentsAccounting.view;
 
 import org.junit.Ignore;
 import org.junit.Test;

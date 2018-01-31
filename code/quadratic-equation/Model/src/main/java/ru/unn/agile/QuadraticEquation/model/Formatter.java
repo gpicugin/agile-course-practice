@@ -1,7 +1,9 @@
 package ru.unn.agile.QuadraticEquation.model;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.math.RoundingMode;
+import java.util.Locale;
 
 public final class Formatter {
 
@@ -9,7 +11,8 @@ public final class Formatter {
         if (value < 0) {
             throw new IllegalArgumentException("Use this function only for positive value!");
         }
-        DecimalFormat df = new DecimalFormat(FORMAT);
+        DecimalFormat df = new DecimalFormat(FORMAT,
+                DecimalFormatSymbols.getInstance(Locale.ENGLISH));
         df.setRoundingMode(RoundingMode.CEILING);
         return df.format(value);
     }

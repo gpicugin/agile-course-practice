@@ -1,14 +1,23 @@
 package ru.unn.agile.AssessmentsAccounting.viewmodel;
 
-import javafx.beans.property.*;
+import javafx.util.Pair;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.util.Pair;
-import ru.unn.agile.AssessmentsAccounting.model.*;
+import javafx.beans.property.StringProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import ru.unn.agile.AssessmentsAccounting.model.Student;
+import ru.unn.agile.AssessmentsAccounting.model.Subject;
+import ru.unn.agile.AssessmentsAccounting.model.Assessment;
+import ru.unn.agile.AssessmentsAccounting.model.StudentsTable;
+import ru.unn.agile.AssessmentsAccounting.model.SubjectsTable;
+import ru.unn.agile.AssessmentsAccounting.model.AssessmentsTable;
 
 import java.util.List;
 import java.util.UUID;
-
 
 public class AssessmentsAccountingViewModel {
 
@@ -343,6 +352,7 @@ public class AssessmentsAccountingViewModel {
     private final StringProperty subjectAverageAssessment = new SimpleStringProperty();
 
     private final BooleanProperty errorMessageIsShown = new SimpleBooleanProperty();
+
     private final StringProperty errorMessageText = new SimpleStringProperty();
 
     private final ObjectProperty<ObservableList<Student>> students =

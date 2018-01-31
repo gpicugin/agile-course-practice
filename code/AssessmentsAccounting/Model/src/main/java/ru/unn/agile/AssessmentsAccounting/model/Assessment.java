@@ -7,7 +7,6 @@ public enum Assessment {
     UNSATISFACTORY(2),
     VERY_POOR(1);
 
-
     public int getAssessment() {
         return this.assessment;
     }
