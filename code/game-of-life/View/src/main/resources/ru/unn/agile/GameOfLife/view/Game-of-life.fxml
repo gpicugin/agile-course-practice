@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import ru.unn.agile.GameOfLife.viewmodel.*?>
+<AnchorPane prefHeight="320.0" prefWidth="650.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="ru.unn.agile.GameOfLife.view.GameOfLife">
+  <fx:define>
+          <ViewModel fx:id="viewModel" />
+  </fx:define>
+  <children>
+    <VBox alignment="CENTER" layoutX="23.0" layoutY="14.0" prefHeight="299.0" prefWidth="294.0">
+      <children>
+        <HBox alignment="CENTER_LEFT" prefHeight="45.0" prefWidth="293.9998779296875">
+          <children>
+            <Label text="Grid size (width x height):" textOverrun="ELLIPSIS">
+            </Label>
+            <TextField fx:id="txtWidth" prefWidth="38.0" />
+            <Label text="x" />
+            <TextField fx:id="txtHeight" prefWidth="38.0" />
+          </children>
+        </HBox>
+        <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" prefHeight="220.0" prefWidth="295.0">
+          <children>
+            <VBox alignment="BASELINE_LEFT" prefHeight="218.0" prefWidth="73.0">
+              <children>
+                <Label text="Grid:" textOverrun="ELLIPSIS" />
+                <Label text="* - alive">
+                </Label>
+                <Label text=". - dead" />
+              </children>
+            </VBox>
+            <TextArea fx:id="txtTable" maxHeight="-Infinity" prefHeight="200.0" prefWidth="200.0" wrapText="true" />
+          </children>
+        </HBox>
+        <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="291.0">
+          <children>
+            <Label text="Status: " />
+            <Label fx:id="lbStatus" prefWidth="239.0" text="${viewModel.status}" />
+          </children>
+        </HBox>
+      </children>
+    </VBox>
+    <VBox layoutX="343.0" layoutY="6.0" prefHeight="302.0" prefWidth="294.0">
+      <children>
+        <HBox alignment="CENTER_LEFT" prefHeight="52.0" prefWidth="185.0">
+          <children>
+            <Button fx:id="btnGetNext" defaultButton="true" disable="${viewModel.gettingNextGenerationDisabled}" mnemonicParsing="false" text="Get next generation" />
+          </children>
+        </HBox>
+        <HBox alignment="BASELINE_LEFT" prefHeight="220.0" prefWidth="295.0">
+          <children>
+            <Label text="Result:" />
+            <TextArea maxHeight="-Infinity" prefHeight="200.0" prefWidth="200.0" visible="true" wrapText="true" text="${viewModel.result}" />
+          </children>
+        </HBox>
+      </children>
+    </VBox>
+    <Separator layoutX="318.0" layoutY="14.0" orientation="VERTICAL" prefHeight="292.0000915527344" prefWidth="14.0" />
+  </children>
+</AnchorPane>
