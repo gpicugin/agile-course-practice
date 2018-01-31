@@ -1,22 +1,24 @@
 package ru.unn.agile.AssessmentsAccounting.model;
 
 public enum Assessment {
+    EXCELLENT(5),
+    GOOD(4),
+    SATISFACTORY(3),
+    UNSATISFACTORY(2),
+    VERY_POOR(1);
 
-    VeryBad(1),
-    Bad(2),
-    Satisfactorily(3),
-    Good(4),
-    VeryGood(5),
-    Great(6),
-    Perfect(7);
-
-    Assessment(final int mark) {
-        this.mark = mark;
+    public int getAssessment() {
+        return this.assessment;
     }
 
-    public int getMark() {
-        return this.mark;
+    Assessment(final int assessment) {
+        this.assessment = assessment;
     }
 
-    private int mark;
+    @Override
+    public String toString() {
+        return Integer.toString(this.assessment);
+    }
+
+    private final int assessment;
 }

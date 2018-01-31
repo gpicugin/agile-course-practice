@@ -1,0 +1,4 @@
+dependencies {
+    compile project(':AssessmentsAccounting-ViewModel')
+    testCompile project(':AssessmentsAccounting-ViewModel').sourceSets.test.output
+}

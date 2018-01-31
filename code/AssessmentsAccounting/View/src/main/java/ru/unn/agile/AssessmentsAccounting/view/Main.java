@@ -8,16 +8,16 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-    @Override
-    public void start(final Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("Accounting.fxml"));
-        primaryStage.setResizable(false);
-        primaryStage.setTitle("AssessmentsAccounting");
-        primaryStage.setScene(new Scene(root));
-        primaryStage.show();
-    }
-
     public static void main(final String[] args) {
         launch(args);
+    }
+
+    @Override
+    public void start(final Stage primaryStage) throws Exception {
+        Parent root = FXMLLoader.load(getClass().getResource("AssessmentsForm.fxml"));
+        primaryStage.setTitle("Assessments Accounting");
+        primaryStage.setScene(new Scene(root));
+        primaryStage.setResizable(false);
+        primaryStage.show();
     }
 }

@@ -18,6 +18,8 @@ include "code/AssessmentsAccounting/View"
 project(":code/AssessmentsAccounting/View").name = "AssessmentsAccounting-View"
 include "code/AssessmentsAccounting/ViewModel"
 project(":code/AssessmentsAccounting/ViewModel").name = "AssessmentsAccounting-ViewModel"
+include "code/AssessmentsAccounting/Infrastructure"
+project(":code/AssessmentsAccounting/Infrastructure").name = "AssessmentsAccounting-Infrastructure"
 
 // Vershinina Olga
 include "code/DistanceBetweenVectors/Model"
