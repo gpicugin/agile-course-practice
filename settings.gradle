@@ -187,8 +187,12 @@ project(":code/convertnumeral/Infrastructure").name = "convertnumeral-Infrastruc
 
 
 // Uvarov Denis
-include "code/game-of-life"
-project(":code/game-of-life").name = "Game-of-life-Model"
+include "code/game-of-life/Model"
+project(":code/game-of-life/Model").name = "game-of-life-Model"
+include "code/game-of-life/View"
+project(":code/game-of-life/View").name = "game-of-life-View"
+include "code/game-of-life/ViewModel"
+project(":code/game-of-life/ViewModel").name = "game-of-life-ViewModel"
 
 // Umnikov Eugene
 include "code/Triangle/Model" 
