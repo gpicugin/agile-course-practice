@@ -159,9 +159,13 @@ include "code/vectors3d/View"
 project(":code/vectors3d/View").name = "vectors3d-View"
 
 
-// Semerenko Alexander
-include "code/Range"
-project(":code/Range").name = "Range-Model"
+// Semerenko Alexander 
+include "code/Range/Model" 
+project(":code/Range/Model").name = "Range-Model" 
+include "code/Range/ViewModel" 
+project(":code/Range/ViewModel").name = "Range-ViewModel" 
+include "code/Range/View" 
+project(":code/Range/View").name = "Range-View"
 
 // Semichev Uriy
 include "code/ratio-calculator"
