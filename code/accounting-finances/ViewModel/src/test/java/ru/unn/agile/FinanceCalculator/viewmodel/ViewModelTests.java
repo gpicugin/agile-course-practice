@@ -1,6 +1,7 @@
 package ru.unn.agile.FinanceCalculator.viewmodel;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import ru.unn.agile.FinanceCalculator.Model.DayExpenses;
@@ -11,22 +12,30 @@ import java.time.Month;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
+
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static junit.framework.TestCase.assertFalse;
 
 public class ViewModelTests {
-    private ViewModel viewModel;
 
     @Before
     public void setUp() {
-        viewModel = new ViewModel();
+        if (viewModel == null) {
+            viewModel = new ViewModel(new FakeLogger());
+        }
+    }
+    public void setViewModel(final ViewModel viewModel) {
+        this.viewModel = viewModel;
     }
 
+    private ViewModel viewModel;
     @After
     public void tearDown() {
         viewModel = null;
     }
+
 
     @Test
     public void canSetDefaultValues() {
@@ -178,6 +187,28 @@ public class ViewModelTests {
     public void addButtonIsEnabledWhenDataIsCorrect() {
         setSubmitData();
         assertFalse(viewModel.isSetButtonDisabled());
+    }
+
+    @Test
+    public void logIsEmptyInTheBeginning() {
+        List<String> log = viewModel.getLog();
+
+        Assert.assertTrue(log.isEmpty());
+    }
+
+    @Test
+    public void logContainsPropertyMessageAfterSubmitData() {
+        setSubmitData();
+        viewModel.submitCosts();
+        String message = viewModel.getLog().get(0);
+        Assert.assertTrue(message.matches(".*" + LogMessages.INPUT_WAS_PRESSED + ".*"));
+    }
+
+    @Test
+    public void logContainsPropertyMessageAfterGettingData() {
+        viewModel.getCosts();
+        String message = viewModel.getLog().get(0);
+        Assert.assertTrue(message.matches(".*" + LogMessages.OUTPUT_WAS_PRESSED + ".*"));
     }
 
     void setSubmitData() {

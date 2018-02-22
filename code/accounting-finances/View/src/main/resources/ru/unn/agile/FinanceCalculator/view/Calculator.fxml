@@ -4,11 +4,12 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <?import ru.unn.agile.FinanceCalculator.viewmodel.*?>
-<AnchorPane prefHeight="400.0" prefWidth="553.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.unn.agile.FinanceCalculator.view.Calculator">
+<AnchorPane prefHeight="400.0" prefWidth="710.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.unn.agile.FinanceCalculator.view.Calculator">
    <fx:define>
       <ViewModel fx:id="viewModel" />
    </fx:define>
@@ -39,5 +40,6 @@
       <Label layoutX="36.0" layoutY="369.0" text="${viewModel.submitStatus}" />
       <Label layoutX="323.0" layoutY="369.0" />
       <Label layoutX="303.0" layoutY="369.0" text="${viewModel.loadStatus}" />
+      <TextArea text="${viewModel.logs}" editable="false" layoutX="489.0" layoutY="68.0" prefHeight="309.0" prefWidth="195.0" />
    </children>
 </AnchorPane>

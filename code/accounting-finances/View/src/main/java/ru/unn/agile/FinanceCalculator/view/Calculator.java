@@ -5,12 +5,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import ru.unn.agile.FinanceCalculator.Infrastructure.TxtLogger;
 import ru.unn.agile.FinanceCalculator.Model.ExpensesType;
 import ru.unn.agile.FinanceCalculator.viewmodel.ViewModel;
 
 public class Calculator {
     @FXML
     void initialize() {
+        viewModel.setLogger(new TxtLogger("./TxtLogger-lab3.log"));
         inputData.valueProperty().bindBidirectional(viewModel.dateInputProperty());
         outputData.valueProperty().bindBidirectional(viewModel.dateOutputProperty());
         inputCost.textProperty().bindBidirectional(viewModel.inputExpensesCostProperty());

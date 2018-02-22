@@ -128,7 +128,8 @@ include "code/accounting-finances/View"
 project(":code/accounting-finances/View").name = "accounting-finances-View"
 include "code/accounting-finances/ViewModel"
 project(":code/accounting-finances/ViewModel").name = "accounting-finances-ViewModel"
-
+include "code/accounting-finances/Infrastructure"
+project(":code/accounting-finances/Infrastructure").name = "accounting-finances-Infrastructure"
 
 // Reshetova Anastasya
 include "code/quadratic-equation/Model"

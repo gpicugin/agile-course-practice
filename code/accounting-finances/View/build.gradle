@@ -1,2 +1,3 @@
 apply from: rootDir.getAbsolutePath() + '/config/scripts/javafx.plugin'
-dependencies { compile project(':accounting-finances-ViewModel') }
+dependencies { compile project(':accounting-finances-ViewModel')
+    compile project(':accounting-finances-Infrastructure')}

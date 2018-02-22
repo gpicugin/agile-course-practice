@@ -24,6 +24,9 @@ import java.util.HashMap;
 public class ViewModel {
     public ViewModel() {
         inputExpenses = new HashMap<>();
+        init();
+    }
+    private void init() {
         for (ExpensesType type : ExpensesType.values()) {
             inputExpenses.put(type, new SimpleStringProperty(""));
         }
@@ -71,12 +74,49 @@ public class ViewModel {
         dateOutput.addListener(listenerOutputDate);
         valueChangedListenerDataOutputSet.add(listenerOutputDate);
 
-       final ValueChangeListenerExpensesTypes listenerInputType
-               = new ValueChangeListenerExpensesTypes();
+        final ValueChangeListenerExpensesTypes listenerInputType
+                = new ValueChangeListenerExpensesTypes();
         expensesTypes.addListener(listenerInputType);
         valueChangedListenerExpensesInputType.add(listenerInputType);
     }
+    private ILogger logger;
 
+    public final void setLogger(final ILogger logger) {
+        if (logger == null) {
+            throw new IllegalArgumentException("Logger parameter can't be null");
+        }
+        this.logger = logger;
+    }
+
+    public ViewModel(final ILogger logger) {
+        inputExpenses = new HashMap<>();
+        setLogger(logger);
+        init();
+    }
+
+    public final List<String> getLog() {
+        return logger.get();
+    }
+
+    private class ValueCachingChangeListener implements ChangeListener<String> {
+        private String prevValue = new String("");
+        private String curValue = new String("");
+        @Override
+        public void changed(final ObservableValue<? extends String> observable,
+                            final String oldValue, final String newValue) {
+            if (oldValue.equals(newValue)) {
+                return;
+            }
+            status.set(getInputStatus().toString());
+            curValue = newValue;
+        }
+        public boolean isChanged() {
+            return !prevValue.equals(curValue);
+        }
+        public void cache() {
+            prevValue = curValue;
+        }
+    }
     public BooleanProperty setButtonDisabledProperty() {
         return setButtonDisabled;
     }
@@ -198,6 +238,13 @@ public class ViewModel {
         ExpensesType type = expensesTypes.get();
         Money money = new Money(inputExpensesCost.get());
         expenses.addCost(money, date, type);
+        StringBuilder message = new StringBuilder(LogMessages.INPUT_WAS_PRESSED);
+        message.append("Arguments: Data = ").append(getDateInput().toString())
+                .append("; Cost = ").append(inputExpensesCost.get())
+                .append("; Category = ").append(expensesTypes.get())
+                .append(".");
+        logger.log(message.toString());
+        updateLogs();
     }
 
     public void getCosts() {
@@ -207,6 +254,24 @@ public class ViewModel {
         for (ExpensesType type : ExpensesType.values()) {
             inputExpenses.get(type).set(expenses.getCost(date, type).getAmount().toString());
         }
+        StringBuilder message = new StringBuilder(LogMessages.OUTPUT_WAS_PRESSED);
+        message.append("Arguments: Data = ").append(dateOutput.get());
+        logger.log(message.toString());
+        updateLogs();
+    }
+    public StringProperty logsProperty() {
+        return logs;
+    }
+    public final String getLogs() {
+        return logs.get();
+    }
+    private void updateLogs() {
+        List<String> fullLog = logger.get();
+        String record = new String("");
+        for (String log : fullLog) {
+            record += log + "\n";
+        }
+        logs.set(record);
     }
 
     private StatusSubmit getInputStatus() {
@@ -297,6 +362,8 @@ public class ViewModel {
     private final BooleanProperty getButtonDisabled = new SimpleBooleanProperty();
     private final StringProperty loadStatus = new SimpleStringProperty();
     private final StringProperty inputExpensesCost = new SimpleStringProperty();
+    private final StringProperty logs = new SimpleStringProperty();
+    private final StringProperty status = new SimpleStringProperty();
     private Expenses expenses;
 }
 
@@ -327,5 +394,13 @@ enum StatusLoad {
         return name;
     }
     private final String name;
+}
+
+final class LogMessages {
+    public static final String INPUT_WAS_PRESSED = "Input pressed. ";
+    public static final String OUTPUT_WAS_PRESSED = "Output pressed ";
+    public static final String EDITING_INPUT_CATEGORY = "Updated input. ";
+
+    private LogMessages() { }
 }
 
