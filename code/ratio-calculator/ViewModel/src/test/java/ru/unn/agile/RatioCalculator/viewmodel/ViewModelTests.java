@@ -171,19 +171,13 @@ public class ViewModelTests {
 
 
     @Test
-    public void logContainsSixMessagesWhenUserInputsAllDataAndPushCalculate() {
-        viewModel.denominatorFirstProperty().set("1");
-        viewModel.onFocusChanged(Boolean.TRUE, Boolean.FALSE);
-        viewModel.numeratorFirstProperty().set("2");
-        viewModel.onFocusChanged(Boolean.TRUE, Boolean.FALSE);
-        viewModel.denominatorSecondProperty().set("3");
-        viewModel.onFocusChanged(Boolean.TRUE, Boolean.FALSE);
-        viewModel.numeratorSecondProperty().set("4");
-        viewModel.onFocusChanged(Boolean.TRUE, Boolean.FALSE);
-        viewModel.onOperationChanged(Operation.ADD, Operation.MULTIPLY);
-        viewModel.onFocusChanged(Boolean.TRUE, Boolean.FALSE);
+    public void putMultipleLogMessagesEnabled() {
+        setInputData("7", "5", "8", "9");
         viewModel.calculate();
-        Assert.assertEquals(6, viewModel.getLog().size());
+        viewModel.calculate();
+        viewModel.calculate();
+
+        Assert.assertEquals(3, viewModel.getLog().size());
     }
 
     @Test
@@ -196,6 +190,28 @@ public class ViewModelTests {
 
     @Test
     public void logContainsCorrectEditFieldsMessage() {
+        setInputData("3", "3", "4", "5");
+        viewModel.calculate();
+        setInputData("7", "7", "7", "7");
+        viewModel.calculate();
+        String message = viewModel.getLog().get(1);
+        checkOutputData(message);
+    }
+
+    @Test
+    public void argumentsCorrectFormatted() {
+        setInputData("1", "1", "1", "1");
+        viewModel.calculate();
+        String message = viewModel.getLog().get(0);
+        assertTrue(message.matches(".* Arguments"
+                + ":first ratio = " + viewModel.numeratorFirstProperty().get()
+                + "/" + viewModel.denominatorFirstProperty().get()
+                + ";second ratio = " + viewModel.numeratorSecondProperty().get()
+                + "/" + viewModel.denominatorSecondProperty().get() + " .*"));
+    }
+
+    @Test
+    public void argumentsAreCorrectlyLogged() {
         setInputData("1", "1", "1", "1");
         viewModel.onFocusChanged(Boolean.TRUE, Boolean.FALSE);
         String message = viewModel.getLog().get(0);
@@ -205,18 +221,6 @@ public class ViewModelTests {
                 + viewModel.denominatorFirstProperty().get() + "; "
                 + viewModel.numeratorSecondProperty().get() + "/"
                 + viewModel.denominatorSecondProperty().get()));
-    }
-
-    @Test
-    public void logContainsArgumentsAfterCalculation() {
-        setInputData("1", "1", "1", "1");
-        viewModel.calculate();
-        String message = viewModel.getLog().get(0);
-        assertTrue(message.matches(".* Arguments"
-                + ":first ratio = " + viewModel.numeratorFirstProperty().get()
-                + "/" + viewModel.denominatorFirstProperty().get()
-                + ";second ratio = " + viewModel.numeratorSecondProperty().get()
-                + "/" + viewModel.denominatorSecondProperty().get() + " .*"));
     }
 
 
@@ -234,6 +238,16 @@ public class ViewModelTests {
         viewModel.onOperationChanged(Operation.ADD, Operation.MULTIPLY);
         viewModel.onOperationChanged(Operation.MULTIPLY, Operation.MULTIPLY);
         Assert.assertEquals(1, viewModel.getLog().size());
+    }
+
+    @Test
+    public void logContainCorrectNumMessages() {
+        setInputData("1", "1", "1", "1");
+        viewModel.calculate();
+        viewModel.calculate();
+        viewModel.calculate();
+
+        Assert.assertEquals(3, viewModel.getLog().size());
     }
 
     void checkOutputData(final String message) {
