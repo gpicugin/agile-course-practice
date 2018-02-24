@@ -15,42 +15,42 @@ import java.util.List;
 import java.util.Locale;
 
 public class TxtLogger implements ILogger {
-    public TxtLogger(final String folderName) {
 
-        BufferedWriter currentLog = null;
-        this.folderName = folderName;
-        try {
-            currentLog = new BufferedWriter(new FileWriter(folderName));
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-        writer = currentLog;
-    }
     @Override
     public List<String> get() {
         BufferedReader bufferedReader;
-        ArrayList<String> currentLog = new ArrayList<>();
+        ArrayList<String> strings = new ArrayList<>();
         try {
-            bufferedReader = new BufferedReader(new FileReader(folderName));
-            String message = bufferedReader.readLine();
+            bufferedReader = new BufferedReader(new FileReader(foldername));
+            String readLine = bufferedReader.readLine();
 
-            while (message != null) {
-                currentLog.add(message);
-                message = bufferedReader.readLine();
+            while (readLine != null) {
+                strings.add(readLine);
+                readLine = bufferedReader.readLine();
             }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
 
-        return currentLog;
+        return strings;
     }
+    public TxtLogger(final String s) {
 
+        BufferedWriter bufferedWriter = null;
+        this.foldername = s;
+        try {
+            bufferedWriter = new BufferedWriter(new FileWriter(s));
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        this.bufferedWriter = bufferedWriter;
+    }
     @Override
     public void log(final String input) {
         try {
-            writer.write(now() + " > " + input);
-            writer.newLine();
-            writer.flush();
+            bufferedWriter.write(now() + " > " + input);
+            bufferedWriter.newLine();
+            bufferedWriter.flush();
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
         }
@@ -59,11 +59,11 @@ public class TxtLogger implements ILogger {
 
     private static String now() {
         Calendar date = Calendar.getInstance();
-        SimpleDateFormat curreent = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
+        SimpleDateFormat curreent = new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS, Locale.ENGLISH);
         return curreent.format(date.getTime());
     }
 
-    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-    private final BufferedWriter writer;
-    private final String folderName;
+    private static final String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
+    private final BufferedWriter bufferedWriter;
+    private final String foldername;
 }

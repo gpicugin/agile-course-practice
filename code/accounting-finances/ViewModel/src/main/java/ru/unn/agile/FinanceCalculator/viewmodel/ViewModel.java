@@ -98,24 +98,26 @@ public class ViewModel {
         return logger.get();
     }
 
-    private class ValueCachingChangeListener implements ChangeListener<String> {
-        private String prevValue = new String("");
-        private String curValue = new String("");
+    private class ValueCachingChangeListenerCache implements ChangeListener<String> {
+
         @Override
         public void changed(final ObservableValue<? extends String> observable,
                             final String oldValue, final String newValue) {
             if (oldValue.equals(newValue)) {
                 return;
             }
-            status.set(getInputStatus().toString());
-            curValue = newValue;
+            stringProperty.set(getInputStatus().toString());
+            nextValue = newValue;
+        }
+        private String value = new String("");
+        public void cache() {
+            value = nextValue;
         }
         public boolean isChanged() {
-            return !prevValue.equals(curValue);
+            return !value.equals(nextValue);
         }
-        public void cache() {
-            prevValue = curValue;
-        }
+        private String nextValue = new String("");
+
     }
     public BooleanProperty setButtonDisabledProperty() {
         return setButtonDisabled;
@@ -266,12 +268,12 @@ public class ViewModel {
         return logs.get();
     }
     private void updateLogs() {
-        List<String> fullLog = logger.get();
-        String record = new String("");
-        for (String log : fullLog) {
-            record += log + "\n";
+        List<String> stringList = logger.get();
+        String currentstring = new String("");
+        for (String s : stringList) {
+            currentstring += s + "\n";
         }
-        logs.set(record);
+        logs.set(currentstring);
     }
 
     private StatusSubmit getInputStatus() {
@@ -363,7 +365,7 @@ public class ViewModel {
     private final StringProperty loadStatus = new SimpleStringProperty();
     private final StringProperty inputExpensesCost = new SimpleStringProperty();
     private final StringProperty logs = new SimpleStringProperty();
-    private final StringProperty status = new SimpleStringProperty();
+    private final StringProperty stringProperty = new SimpleStringProperty();
     private Expenses expenses;
 }
 

@@ -15,56 +15,56 @@ import static junit.framework.TestCase.assertTrue;
 public class TxtLoggerTests {
     @Before
     public void setUp() {
-        testLogger = new TxtLogger(TEST_LOG_NAME);
+        logger = new TxtLogger(TEST_LOG_LOG);
     }
 
     @Test
     public void canCreateLoggerWithFileName() {
-        assertNotNull(testLogger);
+        assertNotNull(logger);
     }
 
     @Test
-    public void doesLogContainsDateAndTime() {
-        String test = "Test message with time";
+    public void doesLogContainsDateAndTimeCorrectly() {
+        String testString = "This IS test";
 
-        testLogger.log(test);
+        logger.log(testString);
 
-        String message = testLogger.get().get(0);
+        String message = logger.get().get(0);
         assertTrue(message.matches("^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2} > .*"));
     }
 
     @Test
-    public void canCreateFile() {
+    public void canCreateFileCorrectly() {
         try {
-            new BufferedReader(new FileReader(TEST_LOG_NAME));
-        } catch (FileNotFoundException ex) {
-            fail("File " + TEST_LOG_NAME + " not found!");
+            new BufferedReader(new FileReader(TEST_LOG_LOG));
+        } catch (FileNotFoundException currentEx) {
+            fail("File " + TEST_LOG_LOG + " not found!");
         }
     }
 
     @Test
-    public void canWriteLogMessage() {
-        String testMessage = "Test message";
+    public void canWriteLogMessageEmpty() {
+        String testMessageWrite = "Test message";
 
-        testLogger.log(testMessage);
+        logger.log(testMessageWrite);
 
-        String message = testLogger.get().get(0);
-        assertTrue(message.matches(".*" + testMessage + "$"));
+        String messageCurrent = logger.get().get(0);
+        assertTrue(messageCurrent.matches(".*" + testMessageWrite + "$"));
     }
 
     @Test
-    public void canAddMultiplyLogMessage() {
-        String[] messages = {"input 1", "input 2"};
+    public void canAddLogMessageMult() {
+        String[] messagesEmpty = {"input 1", "input 2"};
 
-        testLogger.log(messages[0]);
-        testLogger.log(messages[1]);
+        logger.log(messagesEmpty[0]);
+        logger.log(messagesEmpty[1]);
 
-        List<String> actualMessages = testLogger.get();
+        List<String> actualMessages = logger.get();
         for (int i = 0; i < actualMessages.size(); ++i) {
-            assertTrue(actualMessages.get(i).matches(".*" + messages[i] + "$"));
+            assertTrue(actualMessages.get(i).matches(".*" + messagesEmpty[i] + "$"));
         }
     }
 
-    private static final String TEST_LOG_NAME = "./TestLog.log";
-    private TxtLogger testLogger;
+    private static final String TEST_LOG_LOG = "./TestLog.log";
+    private TxtLogger logger;
 }
